@@ -20,4 +20,10 @@ return [
         'version' => '5.3.8',
         'type' => 'css',
     ],
+    'bootstrap' => [
+        'version' => '5.3.8',
+    ],
+    '@popperjs/core' => [
+        'version' => '2.11.8',
+    ],
 ];
