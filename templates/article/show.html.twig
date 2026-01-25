@@ -1,11 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Article{% endblock %}
+{# {% block title %}Article{% endblock %} #}
+{% block title %}Article [{{ article.id }}]{% endblock %}
 
 {% block body %}
-    <h1>Article</h1>
-
-    <table class="table">
+    <h1 class="mt-4">{{ article.title }}</h1>
+        {% if article.Category.name is defined %}
+            <h4 class="fst-italic fw-light">{{ article.Category.name }}</h4>
+        {% endif %}
+    <p class="mt-5 mb-4">
+        {{ article.content }}
+    </p>
+    <!--<table class="table">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -28,11 +34,11 @@
                 </td>
             </tr>
         </tbody>
-    </table>
+    </table>-->
 
-    <a href="{{ path('article_index') }}">back to list</a>
+    <a href="{{ path('article_index') }}" class="btn btn-secondary">Back to list</a>
 
-    <a href="{{ path('article_edit', {'id': article.id}) }}">edit</a>
+    <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-warning ms-4">Edit</a>
 
     {{ include('article/_delete_form.html.twig') }}
 {% endblock %}
