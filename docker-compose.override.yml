@@ -1,8 +1,9 @@
-version: '3'
-
 services:
-###> doctrine/doctrine-bundle ###
-  database:
+  app:
+    volumes:
+      # C'est ici que tu lies ton dossier actuel (.) au dossier du serveur
+      - ./:/var/www/html
     ports:
-      - "5432"
-###< doctrine/doctrine-bundle ###
+      # Mappe les ports selon tes besoins (Hôte:Conteneur)
+      - "9080:80" # Accès Web sur localhost:9001
+      - "3308:3306" # Accès BDD sur localhost:3308
