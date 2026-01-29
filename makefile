@@ -1,13 +1,20 @@
-# Makefile
+# Makefile (Linux, Mac, Windows)
 
 # --- Variables ---
+# Détection basique pour docker compose (V2) vs docker-compose (V1)
+# Si "docker compose" ne marche pas sous Windows : make up DOCKER_COMP="docker-compose"
 DOCKER_COMP = docker compose
+
+# Commandes internes au conteneur
 PHP_CONT = $(DOCKER_COMP) exec -u www-data app php
 SYMFONY = $(PHP_CONT) bin/console
+# On utilise 'sh -c' pour exécuter des scripts shell complexes DANS le conteneur
+DOCKER_SHELL = $(DOCKER_COMP) exec -u www-data app sh -c 
+ROOT_SHELL = $(DOCKER_COMP) exec -u 0 app sh -c
 
 # --- Commandes Docker ---
 
-## Démarre le projet (et reconstruit l'image si la config a changé)
+## Démarre le projet
 up:
 	$(DOCKER_COMP) up -d --build
 
@@ -15,50 +22,46 @@ up:
 down:
 	$(DOCKER_COMP) down
 
-## Affiche les logs en temps réel (utile pour débugger Apache/PHP)
+## Affiche les logs
 logs:
 	$(DOCKER_COMP) logs -f
 
-## Accès terminal (bash) dans le conteneur
+## Accès terminal (bash)
 bash:
 	$(DOCKER_COMP) exec -it app bash
 
-# --- Commandes Projet (Symfony & Composer) ---
+# --- Commandes Projet ---
 
-## Installation complète (Composer + Database + Assets)
+## Installation complète (Fonctionne sur tout OS)
 install:
-	# 1. Création automatique du .env.local si inexistant
-	@if [ ! -f .env.local ]; then \
-		echo "Création du fichier .env.local pour SQLite..."; \
-		echo 'DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"' > .env.local; \
-	fi
-	# CRITIQUE : On s'assure que tout le monde peut lire ce fichier (fix pour Docker)
-	chmod 644 .env.local
+	@echo "--- 1. Vérification/Création du .env.local (Inside Container) ---"
+	# On exécute la logique 'if file exists' DANS le conteneur Linux. L'hôte Windows ne voit qu'une commande Docker.
+	$(DOCKER_SHELL) 'if [ ! -f .env.local ]; then echo "DATABASE_URL=\"sqlite:///%kernel.project_dir%/var/data.db\"" > .env.local; echo ".env.local created"; else echo ".env.local already exists"; fi'
 
-	# 2. Installation des dépendances
-	$(DOCKER_COMP) exec -u 0 app composer install
-	# On s'assure que www-data est propriétaire du dossier var ET du vendor
-	$(DOCKER_COMP) exec -u 0 app chown -R www-data:www-data /var/www/html/var /var/www/html/vendor
-
-	# 3. Base de données
+	@echo "--- 2. Correction des permissions (Inside Container) ---"
+	# On fixe les droits en root à l'intérieur
+	$(ROOT_SHELL) 'chmod 644 .env.local'
+	
+	@echo "--- 3. Installation Composer ---"
+	$(ROOT_SHELL) 'composer install'
+	# Correction propriétaire dossier var/vendor
+	$(ROOT_SHELL) 'chown -R www-data:www-data /var/www/html/var /var/www/html/vendor'
+	
+	@echo "--- 4. Reset Base de données ---"
 	$(MAKE) db-reset
-
-	# 4. Assets
+	
+	@echo "--- 5. Installation Assets ---"
 	$(SYMFONY) importmap:install
 
-## Réinitialise la BDD
+## Réinitialise la BDD (Compatible tout OS)
 db-reset:
-	# Étape 1 : Suppression manuelle du fichier SQLite (Workaround pour le bug --if-exists)
-	$(DOCKER_COMP) exec -u www-data app rm -f var/data.db
-
-	# Étape 2 : Création de la nouvelle base (fichier vide)
+	# Suppression fichier .db via commande interne (évite rm sur l'hôte)
+	$(DOCKER_SHELL) 'rm -f var/data.db'
 	$(SYMFONY) doctrine:database:create
-
-	# Étape 3 : Migrations
 	$(SYMFONY) doctrine:migrations:migrate --no-interaction
-	$(SYMFONY) doctrine:fixtures:load --no-interaction # Décommenter si tu as des fixtures
+	# $(SYMFONY) doctrine:fixtures:load --no-interaction
 
-## Lance une commande Symfony arbitraire (ex: make sf c="make:controller")
+## Lance une commande Symfony (ex: make sf c="make:controller")
 sf:
 	$(SYMFONY) $(c)
 
