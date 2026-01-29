@@ -1,14 +1,12 @@
-# Makefile (Linux, Mac, Windows)
+# Makefile - Universal (Linux, Mac, Windows Fixed)
 
 # --- Variables ---
-# Détection basique pour docker compose (V2) vs docker-compose (V1)
-# Si "docker compose" ne marche pas sous Windows : make up DOCKER_COMP="docker-compose"
 DOCKER_COMP = docker compose
-
-# Commandes internes au conteneur
 PHP_CONT = $(DOCKER_COMP) exec -u www-data app php
 SYMFONY = $(PHP_CONT) bin/console
-# On utilise 'sh -c' pour exécuter des scripts shell complexes DANS le conteneur
+
+# Commandes Shell Docker
+# On utilise 'sh -c' pour passer des commandes complexes
 DOCKER_SHELL = $(DOCKER_COMP) exec -u www-data app sh -c 
 ROOT_SHELL = $(DOCKER_COMP) exec -u 0 app sh -c
 
@@ -32,34 +30,32 @@ bash:
 
 # --- Commandes Projet ---
 
-## Installation complète (Fonctionne sur tout OS)
+## Installation complète (Safe for Windows)
 install:
-	@echo "--- 1. Vérification/Création du .env.local (Inside Container) ---"
-	# On exécute la logique 'if file exists' DANS le conteneur Linux. L'hôte Windows ne voit qu'une commande Docker.
+	@echo "--- 1. Check/Create .env.local (Inside Container) ---"
 	$(DOCKER_SHELL) 'if [ ! -f .env.local ]; then echo "DATABASE_URL=\"sqlite:///%kernel.project_dir%/var/data.db\"" > .env.local; echo ".env.local created"; else echo ".env.local already exists"; fi'
 
-	@echo "--- 2. Correction des permissions (Inside Container) ---"
-	# On fixe les droits en root à l'intérieur
+	@echo "--- 2. Permissions Fix ---"
 	$(ROOT_SHELL) 'chmod 644 .env.local'
 	
-	@echo "--- 3. Installation Composer ---"
+	@echo "--- 3. Composer Install ---"
 	$(ROOT_SHELL) 'composer install'
-	# Correction propriétaire dossier var/vendor
 	$(ROOT_SHELL) 'chown -R www-data:www-data /var/www/html/var /var/www/html/vendor'
 	
-	@echo "--- 4. Reset Base de données ---"
+	@echo "--- 4. Database Reset ---"
 	$(MAKE) db-reset
 	
-	@echo "--- 5. Installation Assets ---"
+	@echo "--- 5. Assets Install ---"
 	$(SYMFONY) importmap:install
 
-## Réinitialise la BDD (Compatible tout OS)
+## Réinitialise la BDD
 db-reset:
-	# Suppression fichier .db via commande interne (évite rm sur l'hôte)
+	@echo "--- Dropping old DB ---"
 	$(DOCKER_SHELL) 'rm -f var/data.db'
+	@echo "--- Creating new DB ---"
 	$(SYMFONY) doctrine:database:create
+	@echo "--- Running Migrations ---"
 	$(SYMFONY) doctrine:migrations:migrate --no-interaction
-	# $(SYMFONY) doctrine:fixtures:load --no-interaction
 
 ## Lance une commande Symfony (ex: make sf c="make:controller")
 sf:
