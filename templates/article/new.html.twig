@@ -1,13 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Article{% endblock %}
+{% block title %}Nouvel article{% endblock %}
 
 {% block body %}
-    <h1 class="my-4">Create new Article</h1>
+<div class="container mt-4">
+    <h1 class="my-4">Créer un nouvel article</h1>
+
     {% if app.user %}
         <p class="lead fst-italic">Par {{ app.user.firstName }} {{ app.user.lastName | upper}}</p>
     {% endif %}
+
     {{ include('article/_form.html.twig') }}
 
-    <a href="{{ path('article_index') }}" class="btn btn-secondary mt-3">Back to list</a>
+    <a href="{{ path('article_index') }}" class="btn btn-secondary mt-3">Revenir aux articles</a>
+    </div>
 {% endblock %}

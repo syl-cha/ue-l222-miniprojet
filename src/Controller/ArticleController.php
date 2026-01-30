@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Category;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -80,5 +81,17 @@ class ArticleController extends AbstractController
         }
 
         return $this->redirectToRoute('article_index', [], Response::HTTP_SEE_OTHER);
+    }
+    
+    #[Route('/category/{id}/articles', name: 'articles_by_category')]
+    public function articlesByCategory(Category $category, ArticleRepository $articleRepository): Response
+    {
+        // Récupère les articles liés à cette catégorie
+        $articles = $articleRepository->findBy(['Category' => $category], ['createdAt' => 'DESC']);
+
+        return $this->render('article/articles_by_category.html.twig', [
+            'category' => $category,
+            'articles' => $articles,
+        ]);
     }
 }

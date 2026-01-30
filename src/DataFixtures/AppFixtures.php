@@ -8,6 +8,7 @@ use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Faker\Factory;
 
 class AppFixtures extends Fixture
 {
@@ -56,20 +57,58 @@ class AppFixtures extends Fixture
         $categorie->setName("Catégorie 1");
         $manager->persist($categorie);
 
-        $article = new Article();
-        $article->setTitle("Article 1");
-        $article->setContent("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut viverra urna in nunc dapibus tincidunt et eu magna. Pellentesque venenatis varius orci sit amet condimentum. Quisque sit amet enim id nisl consectetur gravida. Curabitur efficitur felis rutrum ligula convallis convallis. Vestibulum eget dictum lorem. Vestibulum est justo, fermentum eu eleifend vestibulum, lacinia efficitur erat. Proin a ligula lorem. In iaculis dignissim sodales.");
-        $article->setCategory($categorie);
-        $article->setAuthor($admin);
-        $manager->persist($article);
+        // $article->setAuthor($admin);
 
-        $article = new Article();
-        $article->setTitle("Article 2");
-        $article->setContent("Morbi viverra facilisis aliquet. Phasellus suscipit arcu id felis tempor, in fringilla turpis dictum. Fusce porta finibus diam, vitae lacinia nibh finibus id. Donec facilisis nisl quis egestas sollicitudin. Aenean quis nulla est. Aliquam volutpat dolor eget ultricies maximus. Maecenas felis turpis, lacinia et purus in, viverra sagittis ex. Ut laoreet est sit amet ligula auctor, in venenatis magna interdum. Maecenas suscipit accumsan libero, auctor ullamcorper lectus porta semper.");
-        $article->setCategory($categorie);
-        $article->setAuthor($lambdaUser);
-        $manager->persist($article);
+        $faker = Factory::create('fr_FR');
 
+        /*** Création des catégories ***/
+        $categoryNames = [
+        'Technologie',
+        'Culture',
+        'Sport',
+        'Économie',
+        'Société',
+        'Science',
+        'Politique',
+        'Santé',
+        'Voyages',
+        'Éducation'
+        ];
+
+
+        $categories = [];
+
+
+        foreach ($categoryNames as $name) {
+            $categorie = new Category();
+            $categorie->setName($name);
+            $manager->persist($categorie);
+            $categories[] = $categorie;
+        }
+
+
+        /*** Création d'articles ***/
+        for ($i = 1; $i <= 20; $i++) {
+            $article = new Article();
+            $article->setAuthor($lambdaUser);
+            // Titre : 2 à 6 mots
+            $article->setTitle(rtrim($faker->sentence($faker->numberBetween(2, 8)), '.'));
+            // Contenu : plusieurs paragraphes + texte réaliste
+            $article->setContent(
+                $faker->realText($faker->numberBetween(400, 800))
+            );
+
+            $article->setCreatedAt($faker->dateTimeBetween('-2 years', 'now'));
+
+            // Catégorie aléatoire parmi celles créées
+            $article->setCategory($faker->randomElement($categories));
+
+            $article->setImage("https://picsum.photos/seed/" . rand(1,1000) . "/800/600");
+
+            $manager->persist($article);
+        }
+
+        /*** Enregistrement final en base ***/
         $manager->flush();
     }
 }
