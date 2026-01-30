@@ -11,6 +11,7 @@
                 <th>Id</th>
                 <th>Title</th>
                 <th>Category</th>
+                <th>Author</th>
                 <th>Content</th>
                 <th class="text-end">Actions</th>
             </tr>
@@ -25,7 +26,12 @@
                         {{ article.Category.name }}
                     {% endif %}
                 </td>
-                <td>{{ article.content|slice(0, 80) ~ '...' }}</td>
+                <td>
+                    {% if article.author %}
+                        {{ article.author.firstName }} {{ article.author.lastName | upper }}
+                    {% endif %}
+                </td>
+                <td>{{ article.content|slice(0, 60) ~ '...' }}</td>
                 <td class="text-end">
                     <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-sm btn-info">Show</a>
                     <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Edit</a>
@@ -33,7 +39,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="5" class="text-center">no records found</td>
+                <td colspan="6" class="text-center">no records found</td>
             </tr>
         {% endfor %}
         </tbody>

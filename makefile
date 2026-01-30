@@ -1,4 +1,4 @@
-# Makefile - Universal (Linux, Mac, Windows Fixed)
+# Makefile - (Linux, Mac, Windows Fixed)
 
 # --- Variables ---
 DOCKER_COMP = docker compose
@@ -7,7 +7,7 @@ SYMFONY = $(PHP_CONT) bin/console
 
 # Commandes Shell Docker
 # On utilise 'sh -c' pour passer des commandes complexes
-DOCKER_SHELL = $(DOCKER_COMP) exec -u www-data app sh -c 
+DOCKER_SHELL = $(DOCKER_COMP) exec -u www-data app sh -c
 ROOT_SHELL = $(DOCKER_COMP) exec -u 0 app sh -c
 
 # --- Commandes Docker ---
@@ -37,14 +37,14 @@ install:
 
 	@echo "--- 2. Permissions Fix ---"
 	$(ROOT_SHELL) 'chmod 644 .env.local'
-	
+
 	@echo "--- 3. Composer Install ---"
 	$(ROOT_SHELL) 'composer install'
 	$(ROOT_SHELL) 'chown -R www-data:www-data /var/www/html/var /var/www/html/vendor'
-	
+
 	@echo "--- 4. Database Reset ---"
 	$(MAKE) db-reset
-	
+
 	@echo "--- 5. Assets Install ---"
 	$(SYMFONY) importmap:install
 
@@ -56,6 +56,8 @@ db-reset:
 	$(SYMFONY) doctrine:database:create
 	@echo "--- Running Migrations ---"
 	$(SYMFONY) doctrine:migrations:migrate --no-interaction
+	@echo "--- Running Fixtures ---"
+	$(SYMFONY) doctrine:fixtures:load --no-interaction
 
 ## Lance une commande Symfony (ex: make sf c="make:controller")
 sf:

@@ -4,7 +4,9 @@
 
 {% block body %}
     <h1 class="my-4">Create new Article</h1>
-
+    {% if app.user %}
+        <p class="lead fst-italic">Par {{ app.user.firstName }} {{ app.user.lastName | upper}}</p>
+    {% endif %}
     {{ include('article/_form.html.twig') }}
 
     <a href="{{ path('article_index') }}" class="btn btn-secondary mt-3">Back to list</a>

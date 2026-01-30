@@ -5,9 +5,15 @@
 
 {% block body %}
     <h1 class="mt-4">{{ article.title }}</h1>
-        {% if article.Category.name is defined %}
-            <h4 class="fst-italic fw-light">{{ article.Category.name }}</h4>
-        {% endif %}
+    {% if article.Category.name is defined %}
+        <h4 class="fst-italic fw-light">{{ article.Category.name }}</h4>
+    {% endif %}
+    {% if article.author %}
+        <p class="lead fst-italic">
+            Par {{ article.author.firstName }} {{ article.author.lastName | upper }}
+        </p>
+    {% endif %}
+
     <p class="mt-5 mb-4">
         {{ article.content }}
     </p>

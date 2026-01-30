@@ -16,6 +16,20 @@
                     <a class="nav-link {% if app.request.get('_route') starts with 'category_' %}active{% endif %}" href="{{ path('category_index') }}">Catégories</a>
                 </li>
             </ul>
+            <div class="d-flex align-items-center">
+                {% if app.user %}
+                    <span class="navbar-text me-3">
+                        {{ app.user.firstName }} {{ app.user.lastName | upper }}
+                    </span>
+                    <a class="btn btn-secondary" href="{{ path('app_logout') }}" title="Déconnexion">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </a>
+                {% else %}
+                    <a class="btn btn-secondary" href="{{ path('app_login') }}" title="Connexion">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                    </a>
+                {% endif %}
+            </div>
         </div>
     </div>
 </nav>
