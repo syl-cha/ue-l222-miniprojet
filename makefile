@@ -45,7 +45,9 @@ install:
 	@echo "--- 4. Database Reset ---"
 	$(MAKE) db-reset
 
-	@echo "--- 5. Assets Install ---"
+	@echo "--- 5. Assets & Theme Install ---"
+	$(ROOT_SHELL) 'mkdir -p assets/vendor && chown -R www-data:www-data assets/vendor'
+	$(DOCKER_SHELL) 'curl -L https://bootswatch.com/5/litera/bootstrap.min.css -o assets/vendor/bootstrap-theme.css'
 	$(SYMFONY) importmap:install
 
 ## Réinitialise la BDD
