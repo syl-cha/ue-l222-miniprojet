@@ -33,8 +33,10 @@
                 </td>
                 <td>{{ article.content|slice(0, 60) ~ '...' }}</td>
                 <td class="text-end">
+                    {% if app.user and article.author and app.user == article.author %}
+                        <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Edit</a>
+                    {% endif %}
                     <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-sm btn-info">Show</a>
-                    <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Edit</a>
                 </td>
             </tr>
         {% else %}
