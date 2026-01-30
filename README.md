@@ -532,17 +532,26 @@ On conçoit un système de pile qui accueillera tous les messages émits.
 {% endfor %}
 ```
 
+#### Envoie d'un message 
+, on utilise la méthode `addFlash` pour alerter l'utilisateur qu'il n'a pas le droit d'édition sur le fichier qu'il souhaite éditer.
+
+```php
+if (!$isAuthor && !$isAdmin) {
+    $this->addFlash('danger', "Vous n'êtes pas autorisé à supprimer cet article.");
+    ...
+}
+```
+
 #### Listerners
 
-On implémentes un listener spécifique dans `assets/apps.js` afin de fermer automatiquement les messages après 10s.
+On implémentes un listener spécifique dans `assets/apps.js` afin de fermer automatiquement les messages d'alerte après 10s.
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.alert[data-timeout]').forEach((alertEl) => {
     setTimeout(
       () => {
-        const alert = new bootstrap.Alert(alertEl);
-        alert.close();
+        Alert.getOrCreateInstance(alertEl).close();
       },
       parseInt(alertEl.dataset.timeout, 10),
     );
