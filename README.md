@@ -401,6 +401,21 @@ Nous devons aussi mettre à jour `ArticleController` afin de lié l'article à l
 $article->setAuthor($this->getUser());
 ```
 
+On doit aussi ajouter des restrictions aux fonctions `edit` et `delete` de ce même contrôleur afin que seul l'auteur d'un article puisse le modifier (ainsi que l'admin) : si l'utilisateur n'est pas égal à l'auteur alors on envoie un message (voir Interfaces) et l'utilisateur est redirigé.
+
+```php
+/** @var User|null $currentUser */
+$currentUser = $this->getUser();
+
+$isAuthor = $article->getAuthor()?->getId() === $currentUser?->getId();
+$isAdmin = $this->isGranted('ROLE_ADMIN');
+if (!$isAuthor && !$isAdmin) {
+    $this->addFlash('danger', "Vous n'êtes pas autorisé à supprimer cet article.");
+
+    return $this->redirectToRoute('article_index');
+}
+```
+
 #### Ajout d'utilsateurs
 
 ##### Utilisateurs par défaut
@@ -494,4 +509,43 @@ $builder
         'label' => 'Rôles'
     ])
 ;
+```
+
+## Interfaces
+
+### Système de message d'alerte
+
+Lorsque un utilisateur tente une opération interdite, il doit être averti par un système de message flash.
+
+#### Modèle TWIG
+
+On conçoit un système de pile qui accueillera tous les messages émits.
+
+```twig
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert" data-timeout="5000">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+```
+
+#### Listerners
+
+On implémentes un listener spécifique dans `assets/apps.js` afin de fermer automatiquement les messages après 10s.
+
+```js
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.alert[data-timeout]').forEach((alertEl) => {
+    setTimeout(
+      () => {
+        const alert = new bootstrap.Alert(alertEl);
+        alert.close();
+      },
+      parseInt(alertEl.dataset.timeout, 10),
+    );
+  });
+});
 ```
