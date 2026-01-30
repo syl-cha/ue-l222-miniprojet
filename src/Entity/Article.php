@@ -56,6 +56,40 @@ class Article
         return $this;
     }
 
+       #[ORM\Column(type: "datetime", nullable: true)]
+private ?\DateTimeInterface $createdAt = null;
+
+
+        public function getCreatedAt(): ?\DateTimeInterface
+        {
+        return $this->createdAt;
+        }
+
+
+        public function setCreatedAt(\DateTimeInterface $createdAt): self
+        {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+        private ?string $image = null;
+
+
+        public function getImage(): ?string
+        {
+        return $this->image;
+        }
+
+
+        public function setImage(?string $image): self
+        {
+        $this->image = $image;
+        return $this;
+    }
+
+    
     public function getCategory(): ?Category
     {
         return $this->Category;

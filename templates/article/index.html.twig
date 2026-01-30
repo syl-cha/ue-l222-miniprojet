@@ -3,49 +3,64 @@
 {% block title %}UE-L222 | Article{% endblock %}
 
 {% block body %}
-    <h1 class="my-4">Article index</h1>
 
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Author</th>
-                <th>Content</th>
-                <th class="text-end">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for article in articles %}
-            <tr>
-                <td>{{ article.id }}</td>
-                <td>{{ article.title }}</td>
-                <td>
-                    {% if article.Category is not null and article.Category.name is defined %}
-                        {{ article.Category.name }}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if article.author %}
-                        {{ article.author.firstName }} {{ article.author.lastName | upper }}
-                    {% endif %}
-                </td>
-                <td>{{ article.content|slice(0, 60) ~ '...' }}</td>
-                <td class="text-end">
-                    {% if app.user and article.author and app.user == article.author %}
-                        <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Edit</a>
-                    {% endif %}
-                    <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-sm btn-info">Show</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6" class="text-center">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="container mt-4">
+        <h1 class="my-5">Retrouvez tous les articles</h1>
+        <div class="row">
+            <!-- Contenu principal -->
+            <div class="col-lg-10">
+                {% for article in articles %}
+                <div class="row mb-4 align-items-start">
+                    <div class="col-md-4">
+                        <img src="{{ article.image }}" alt="{{ article.title }}" class="img-fluid rounded">
+                    </div>
+                    <div class="col-md-8">
+                        <h2>{{ article.title }}</h2>
+                        <p class="text-muted">Catégorie {{ article.Category.name }} |  Publié le {{ article.createdAt|date('d/m/Y') }}
+                         {% if article.author %}
+                        par {{ article.author.firstName }} {{ article.author.lastName | upper }}
+                    {% endif %}</p>
+                        <p>{{ article.content|slice(0, 200) ~ '...' }}</p>
+                        <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                        <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
 
-    <a href="{{ path('article_new') }}" class="btn btn-primary">Create new</a>
+
+            <!-- Aside -->
+            <div class="col-lg-2">
+                <aside class="p-3 bg-light rounded position-sticky" style="top: 2rem;">
+
+                    <h6>Articles récents</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Exemple</a></li>
+                        <li><a href="#">Exemple</a></li>
+                        <li><a href="#">Exemple</a></li>
+                    </ul>
+
+
+                    <h6 class="mt-4">Articles les plus vus</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Exemple</a></li>
+                        <li><a href="#">Exemple</a></li>
+                        <li><a href="#">Exemple</a></li>
+                    </ul>
+
+                    <h6>Tags les plus utilisés</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Exemple</a></li>
+                        <li><a href="#">Exemple</a></li>
+                        <li><a href="#">Exemple</a></li>
+                    </ul>
+
+                    <a href="{{ path('article_new') }}" class="btn btn-primary">Créer un article</a>
+
+                </aside>
+            </div>
+        </div>
+    </div>
+
+
 {% endblock %}

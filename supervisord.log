@@ -34,3 +34,33 @@
 2026-01-30 20:13:53,183 INFO spawned: 'mysqld' with pid 390
 2026-01-30 20:13:54,275 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 2026-01-30 20:13:54,275 INFO success: mysqld entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-01-30 15:14:23,236 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2026-01-30 15:14:23,236 INFO Included extra file "/etc/supervisor/conf.d/supervisord-apache2.conf" during parsing
+2026-01-30 15:14:23,237 INFO Included extra file "/etc/supervisor/conf.d/supervisord-mysqld.conf" during parsing
+2026-01-30 15:14:23,245 INFO RPC interface 'supervisor' initialized
+2026-01-30 15:14:23,246 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2026-01-30 15:14:23,250 INFO supervisord started with pid 1
+2026-01-30 15:14:24,262 INFO spawned: 'apache2' with pid 25
+2026-01-30 15:14:24,266 INFO spawned: 'mysqld' with pid 26
+2026-01-30 15:14:24,463 INFO exited: apache2 (exit status 0; not expected)
+2026-01-30 15:14:25,597 INFO spawned: 'apache2' with pid 183
+2026-01-30 15:14:25,598 INFO success: mysqld entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-01-30 15:14:25,645 INFO exited: apache2 (exit status 0; not expected)
+2026-01-30 15:14:27,650 INFO spawned: 'apache2' with pid 233
+2026-01-30 15:14:27,717 INFO exited: apache2 (exit status 0; not expected)
+2026-01-30 15:14:29,414 INFO exited: mysqld (exit status 0; expected)
+2026-01-30 15:14:30,419 INFO spawned: 'mysqld' with pid 255
+2026-01-30 15:14:30,724 INFO spawned: 'apache2' with pid 398
+2026-01-30 15:14:31,774 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-01-30 15:14:31,774 INFO success: mysqld entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-01-30 15:43:28,861 INFO reaped unknown pid 894 (exit status 0)
+2026-01-30 15:43:28,866 INFO reaped unknown pid 899 (exit status 0)
+2026-01-30 15:46:31,062 INFO reaped unknown pid 969 (exit status 0)
+2026-01-30 15:50:35,343 INFO reaped unknown pid 1081 (exit status 0)
+2026-01-30 16:07:19,648 INFO reaped unknown pid 1260 (exit status 0)
+2026-01-30 17:34:58,846 INFO reaped unknown pid 1351 (exit status 0)
+2026-01-30 17:44:15,520 INFO reaped unknown pid 1462 (exit status 0)
+2026-01-30 17:50:23,947 INFO reaped unknown pid 1562 (exit status 0)
+2026-01-30 17:54:01,175 INFO reaped unknown pid 1674 (exit status 0)
+2026-01-30 19:32:48,411 WARN received SIGTERM indicating exit request
+2026-01-30 19:32:48,459 INFO waiting for apache2, mysqld to die
