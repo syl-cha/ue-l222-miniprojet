@@ -75,6 +75,7 @@
 ###> symfony/asset-mapper ###
 /public/assets/
 /assets/vendor/
+!/assets/vendor/bootstrap-theme.css
 ###< symfony/asset-mapper ###
 
 # fichiers de log
