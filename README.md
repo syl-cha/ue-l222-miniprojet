@@ -384,6 +384,22 @@ What type of relationship is this?
  make sf c="make:migration"
  make sf c="doctrine:migrations:migrate"
  ```
+ 
+ Le nom de l'utilisateur peut-être à présent à jouté aux articles et dans les listes d'articles :
+ 
+ ```bash
+{% if article.author %}
+    <p class="lead fst-italic">
+        Par {{ article.author.firstName }} {{ article.author.lastName | upper }}
+    </p>
+{% endif %}
+  ```
+  
+Nous devons aussi mettre à jour `ArticleController` afin de lié l'article à l'utilisateur connecté :
+
+```php
+$article->setAuthor($this->getUser());
+```
 
 #### Ajout d'utilsateurs
 
