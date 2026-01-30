@@ -15,11 +15,11 @@
             {# Catégorie et date #}
             {% if article.Category.name is defined %}
                 <p class="text-muted fst-italic mb-3">
-                    {{ article.Category.name }} | Publié le {{ article.createdAt|date('d/m/Y') par {% if article.author %}
-        <p class="lead fst-italic">
-            Par {{ article.author.firstName }} {{ article.author.lastName | upper }}
-        </p>
-    {% endif %}}}
+                    {{ article.Category.name }} | Publié le {{ article.createdAt|date('d/m/Y')  }}
+                    {% if article.author %}
+                        par {{ article.author.firstName }} {{ article.author.lastName | upper }}
+                    </p>
+    {% endif %}
                 </p>
             {% endif %}
 
