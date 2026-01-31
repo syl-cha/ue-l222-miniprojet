@@ -66,7 +66,7 @@ Tout le nécessaire est renseigné dans `composer.json`...
 
 ## Description des fonctionnalités
 
-### Utlisateurs
+### Utilisateurs
 
 Dans la version originale, le blog n'a pas d'utilisateurs. Nous décidons d'implémenter cette fonctionnalité afin de :
 - gérer un système d'auteur pour les articles (droit d'éditier et de création) ;
@@ -557,4 +557,81 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   });
 });
+```
+
+### Compteur de vues
+
+On commence par ajouter une propriété `vue_count` à `Article`
+
+```bash
+❯ make sf c="make:entity Article"
+docker compose exec -u www-data app php bin/console make:entity Article
+ Your entity already exists! So let's add some new fields!
+
+ New property name (press <return> to stop adding fields):
+ > vue_count
+
+ Field type (enter ? to see all types) [string]:
+ > integer
+
+ Can this field be null in the database (nullable) (yes/no) [no]:
+ >
+
+ updated: src/Entity/Article.php
+
+ Add another property? Enter the property name (or press <return> to stop adding fields):
+ >
+
+
+
+  Success!
+
+
+ Next: When you're ready, create a migration with php bin/console make:migration
+ ```
+ 
+ Ensuite on mets à jour `ArticleController` afin de prendre en compte ce nouveau champ.
+ Dans la fonction `new`, on ajoute
+ 
+ ```php
+ $article->setVueCount(0);
+ ```
+ 
+ Dans la fonction `show`, on met à jour le compteur :
+ 
+ ```php
+// mise à jour des vues
+$vueCount = $article->getVueCount();
+$article->setVueCount($vueCount + 1);
+// mise à jour de la BDD
+$entityManager->flush();
+```
+Pour s'en servir, nous n'avons plus qu'à appeler la variable correspondante dans les modèles TWIG :
+
+```twig
+<i class="bi bi-eye-fill"></i> {{ article.vueCount | default(0) }}
+```
+
+Nous avons aussi créé une requête afin de retrrouver la liste des articles des plus vus dans `ArticleRepository` :
+
+```php
+public function findMostViewed(int $limit = 5): array
+{
+    return $this->createQueryBuilder('a')
+        ->orderBy('a.vue_count', 'DESC')
+        ->setMaxResults($limit)
+        ->getQuery()
+        ->getResult()
+    ;
+}
+```
+et dans `ArticleCOntroller`, nous utilisons cette requête en ajoutant la propriété `mostViewedArticles` à l'article afin de pouvoir afficher les articles les plus vus :
+
+```php
+'mostViewedArticles' => $articleRepository->findMostViewed(3)
+```
+Les fixtures pour les articles ont aussi été mises à jour :
+
+```php
+$article->setVueCount($faker->numberBetween(2, 45));
 ```

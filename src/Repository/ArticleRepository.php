@@ -47,4 +47,17 @@ class ArticleRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * @return Article[] Returns an array of most viewed Article objects
+     */
+    public function findMostViewed(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('a')
+            ->orderBy('a.vue_count', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

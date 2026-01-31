@@ -31,6 +31,8 @@ class ArticleController extends AbstractController
 
         return $this->render('article/index.html.twig', [
             'articles' => $pagination, // On envoie $pagination au lieu de $articleRepository->findAll()
+            'articles' => $articleRepository->findBy([], ['createdAt' => 'DESC']),
+            'mostViewedArticles' => $articleRepository->findMostViewed(3),
         ]);
     }
 
