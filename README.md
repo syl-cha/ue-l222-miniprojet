@@ -511,6 +511,50 @@ $builder
 ;
 ```
 
+
+##### Création d'un formulaire de recherche
+1. Création d'un formulaire via make :
+❯ make sf c="make:form"
+
+    docker compose exec -u www-data app php bin/console make:form
+
+    The name of the form class (e.g. AgreeablePizzaType):
+    > SearchType
+
+    The name of Entity or fully qualified model class name that the new form will be bound to (empty for none):
+    > Article
+
+    created: src/Form/SearchType.php
+
+
+2. On adapte notre formulaire à celui d'une barre de recherche :
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+        {
+            $builder
+                ->add('query', TextType::class, [
+                    'attr' => [
+                        'placeholder' => 'Rechercher un article...'
+                    ]
+                ]); 
+        }
+
+        public function configureOptions(OptionsResolver $resolver): void
+        {
+            $resolver->setDefaults([
+                'method' => 'GET',
+                'csrf_protection' => false
+            ]);
+        }
+    }
+
+3. On crée notre requête dans le ArticleRepository.php : avec jointure pour rassembler les différentes entités et pouvoir faire une recherche globale : article (titre ou contenu), catégorie et auteur (nom ou prénom)
+
+4. On l'implémente dans notre ArticleController.php
+
+5. On modifie la template du header pour l'afficher, et on crée une nouvelle template qui correspondra à la page de résultats de recherche (avec une architecture similaire à la page article/index.html.twig)
+
+
 ## Interfaces
 
 ### Système de message d'alerte

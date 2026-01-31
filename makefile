@@ -1,48 +1,45 @@
-# Makefile - (Linux, Mac, Windows Fixed)
+# Makefile - version Windows/Docker/Symfony
 
 # --- Variables ---
 DOCKER_COMP = docker compose
 PHP_CONT = $(DOCKER_COMP) exec -u www-data app php
 SYMFONY = $(PHP_CONT) bin/console
 
-# Commandes Shell Docker
-# On utilise 'sh -c' pour passer des commandes complexes
-DOCKER_SHELL = $(DOCKER_COMP) exec -u www-data app sh -c
-ROOT_SHELL = $(DOCKER_COMP) exec -u 0 app sh -c
-
 # --- Commandes Docker ---
 
-## Démarre le projet
+## Demarre le projet (et reconstruit l'image si la config a change)
 up:
 	$(DOCKER_COMP) up -d --build
 
-## Arrête les conteneurs
+## Arrete les conteneurs
 down:
 	$(DOCKER_COMP) down
 
-## Affiche les logs
+## Affiche les logs en temps réel (utile pour debuggage)
 logs:
 	$(DOCKER_COMP) logs -f
 
-## Accès terminal (bash)
+## Acces terminal (bash) dans le conteneur
 bash:
 	$(DOCKER_COMP) exec -it app bash
 
-# --- Commandes Projet ---
+# --- Commandes Projet (Symfony & Composer) ---
 
-## Installation complète (Safe for Windows)
+## Installation complete (Composer + Database + Assets)
 install:
-	@echo "--- 1. Check/Create .env.local (Inside Container) ---"
-	$(DOCKER_SHELL) 'if [ ! -f .env.local ]; then echo "DATABASE_URL=\"sqlite:///%kernel.project_dir%/var/data.db\"" > .env.local; echo ".env.local created"; else echo ".env.local already exists"; fi'
+	@echo "Step 1: Creating .env.local inside container..."
+	$(DOCKER_COMP) exec -u www-data app sh -c 'if [ ! -f .env.local ]; then \
+		echo "DATABASE_URL=\"sqlite:///%kernel.project_dir%/var/data.db\"" > .env.local; \
+	fi'
 
-	@echo "--- 2. Permissions Fix ---"
-	$(ROOT_SHELL) 'chmod 644 .env.local'
+	@echo "Step 2: Set permissions..."
+	$(DOCKER_COMP) exec -u 0 app chmod 644 .env.local
 
-	@echo "--- 3. Composer Install ---"
-	$(ROOT_SHELL) 'composer install'
-	$(ROOT_SHELL) 'chown -R www-data:www-data /var/www/html/var /var/www/html/vendor'
+	@echo "Step 3: Installing dependencies..."
+	$(DOCKER_COMP) exec -u 0 app composer install
+	$(DOCKER_COMP) exec -u 0 app chown -R www-data:www-data /var/www/html/var /var/www/html/vendor
 
-	@echo "--- 4. Database Reset ---"
+	@echo "Step 4: Resetting database..."
 	$(MAKE) db-reset
 
 	@echo "--- 5. Assets & Theme Install ---"
@@ -50,18 +47,21 @@ install:
 	$(DOCKER_SHELL) 'curl -L https://bootswatch.com/5/litera/bootstrap.min.css -o assets/vendor/bootstrap-theme.css'
 	$(SYMFONY) importmap:install
 
-## Réinitialise la BDD
+## Reinitialise la BDD
 db-reset:
-	@echo "--- Dropping old DB ---"
-	$(DOCKER_SHELL) 'rm -f var/data.db'
-	@echo "--- Creating new DB ---"
+	@echo "Deleting old SQLite database if exists..."
+	$(DOCKER_COMP) exec -u www-data app rm -f var/data.db
+
+	@echo "Creating new database..."
 	$(SYMFONY) doctrine:database:create
-	@echo "--- Running Migrations ---"
+
+	@echo "Running migrations..."
 	$(SYMFONY) doctrine:migrations:migrate --no-interaction
-	@echo "--- Running Fixtures ---"
+
+	@echo "Loading fixtures..."
 	$(SYMFONY) doctrine:fixtures:load --no-interaction
 
-## Lance une commande Symfony (ex: make sf c="make:controller")
+## Lance une commande Symfony arbitraire (ex: make sf c="make:controller")
 sf:
 	$(SYMFONY) $(c)
 

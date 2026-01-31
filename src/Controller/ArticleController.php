@@ -39,6 +39,23 @@ class ArticleController extends AbstractController
         ]);
     }
 
+    #[Route('/search', name: 'article_search', methods: ['GET'])]
+    public function search(Request $request, ArticleRepository $articleRepository): Response 
+    {
+        $recherche = $request->query->get('query', '');
+        
+        if (!empty(trim($recherche))) {
+            $articles = $articleRepository->searchFunction($recherche);
+        } else {
+            $articles = $articleRepository->findAll();
+        }
+        
+        return $this->render('article/search.html.twig', [
+            'articles' => $articles,
+            'query' => $recherche,
+        ]);
+    }
+
     #[Route('/new', name: 'article_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

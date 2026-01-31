@@ -21,6 +21,22 @@
                     </li>
                 {% endif %}
             </ul>
+            <form method="get" action="{{ path('article_search') }}" class="me-2">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        name="query" 
+                        class="form-control" 
+                        placeholder="Rechercher un article..." 
+                        value="" {#pas de valeur parce que le query n'existe pas ici#}
+                        autofocus
+                        style="border:none; outline:none; box-shadow: none"
+                    >
+                    <button class="btn btn-primary" type="submit" style="background-color: #545454; border:none">
+                        Rechercher
+                    </button>
+                </div>
+            </form>
             <div class="d-flex align-items-center">
                 {% if app.user %}
                     <span class="navbar-text me-3">

@@ -1,11 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}UE-L222 | Article{% endblock %}
+{% block title %}UE-L222 | Recherche{% endblock %}
 
 {% block body %}
 
     <div class="container mt-4">
-        <h1 class="my-5">Retrouvez tous les articles</h1>
+        <h1 class="my-4">Recherche d'articles</h1>
+
+        <form method="get" action="{{ path('article_search') }}" class="mb-4">
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    name="query" 
+                    class="form-control" 
+                    placeholder="Rechercher un article..." 
+                    value="" {#pas de valeur parce que le query n'existe pas ici#}
+                    autofocus
+                >
+                <button class="btn btn-primary" type="submit">
+                    Rechercher
+                </button>
+            </div>
+        </form>
+        
+
+        {# message de résultat #}
+        {% if query %}
+            <div class="alert alert-info">
+                Résultats pour : <strong>"{{ query }}"</strong> - {{ articles|length }} article(s) trouvé(s)
+            </div>
+        {% endif %}
+
+        {# afficheage des résultats #}
+        <h1 class="my-5">Recherche d'articles</h1>
         <div class="row">
             <!-- Contenu principal -->
             <div class="col-lg-10">
@@ -26,38 +53,10 @@
                     </div>
                 </div>
                 {% endfor %}
-                <div class="navigation d-flex justify-content-center mt-4">
-                    {{ knp_pagination_render(articles) }}
-                </div>
+                
             </div>
 
-
-            <!-- Aside -->
-            <div class="col-lg-2">
-                <aside class="p-3 bg-light rounded position-sticky" style="top: 2rem;">
-
-                    {{ include('partials/_article_short_list.html.twig', {
-                        title: 'Articles récents',
-                        articles: articles|slice(0, 3)
-                    }) }}
-
-                    {{ include('partials/_article_short_list.html.twig', {
-                        title: 'Articles les plus vus',
-                        articles: mostViewedArticles
-                    }) }}
-
-                    <h6>Tags les plus utilisés</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Exemple</a></li>
-                        <li><a href="#">Exemple</a></li>
-                        <li><a href="#">Exemple</a></li>
-                    </ul>
-
-                    <a href="{{ path('article_new') }}" class="btn btn-primary">Créer un article</a>
-
-                </aside>
-            </div>
-        </div>
+    <div class="d-flex mb-2">
+        <a href="{{ path('article_index') }}" class="btn btn-secondary">Retour à la liste complète</a>
     </div>
-
 {% endblock %}
