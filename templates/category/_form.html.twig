@@ -1,4 +1,4 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {{ form_row(form.name, {'label': 'Nom de la catégorie'}) }}
+    <button class="btn btn-primary">{{ button_label|default('Créer la catégorie') }}</button>
 {{ form_end(form) }}

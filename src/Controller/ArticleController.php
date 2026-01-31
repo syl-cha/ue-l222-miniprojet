@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -65,6 +66,35 @@ class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+        // --- DÉBUT LOGIQUE IMAGE ---
+            // On récupère le fichier depuis le champ "non-mappé" du formulaire
+            $imageFile = $form->get('imageFile')->getData();
+
+            if ($imageFile) {
+                // On génère un nom unique pour éviter les doublons (ex: 65b8f.jpg)
+                $newFilename = uniqid().'.'.$imageFile->guessExtension();
+
+                // On déplace le fichier dans le dossier configuré (public/uploads/articles)
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                    // On met à jour le champ "image" de l'article avec le nom du fichier
+                    $article->setImage($newFilename);
+                } catch (FileException $e) {
+                    // On ajoute un message d'erreur qui s'affichera sur la page
+                    $this->addFlash('danger', "Une erreur est survenue lors de l'upload de l'image.");
+                    $logger->error($e->getMessage());
+                    // On arrête le processus et on réaffiche le formulaire
+                    return $this->render('article/new.html.twig', [
+                        'article' => $article,
+                        'form' => $form,
+                    ]);
+                }
+            }
+
             /** @var User $user */
             $user = $this->getUser();
             $article->setAuthor($user);
@@ -97,6 +127,9 @@ class ArticleController extends AbstractController
     #[Route('/{id}/edit', name: 'article_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
+        // 1. On stocke le nom de l'image actuelle
+        $oldImage = $article->getImage();
+
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
 
@@ -113,6 +146,24 @@ class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $imageFile = $form->get('imageFile')->getData();
+
+            if ($imageFile) {
+                // Un nouveau fichier est uploadé -> on traite comme pour le 'new'
+                $newFilename = uniqid().'.'.$imageFile->guessExtension();
+                $imageFile->move($this->getParameter('images_directory'), $newFilename);
+                $article->setImage($newFilename);
+
+                // Supprime l'ancien fichier physique pour ne pas encombrer le serveur
+                if ($oldImage && !str_contains($oldImage, 'http')) {
+                     unlink($this->getParameter('images_directory').'/'.$oldImage);
+                }
+            } else {
+                // Aucun nouveau fichier -> on remet l'ancien nom pour ne pas perdre l'image
+                $article->setImage($oldImage);
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('article_index', [], Response::HTTP_SEE_OTHER);

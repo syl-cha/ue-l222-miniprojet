@@ -20,6 +20,11 @@
                         <a class="nav-link" href="{{ path('app_user_index') }}">Auteurs</a>
                     </li>
                 {% endif %}
+                {% if is_granted('ROLE_USER') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('article_new') }}">Créer un article</a>
+                    </li>
+                {% endif %}
             </ul>
             <form method="get" action="{{ path('article_search') }}" class="me-2">
                 <div class="input-group">

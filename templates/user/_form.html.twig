@@ -1,4 +1,26 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div class="mb-3 mt-4">
+        {{ form_row(form.username, {'label': "Nom d'utilisateur"}) }}
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.firstName, {'label': 'Prénom'}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.lastName, {'label': 'Nom'}) }}
+        </div>
+    </div>
+
+    <div class="mb-3">
+        {{ form_row(form.plainPassword, {'label': 'Mot de passe'}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_row(form.roles, {'label': 'Droits d’accès'}) }}
+    </div>
+
+    <button class="btn btn-primary px-4">
+        {{ button_label|default("Enregistrer l'utilisateur") }}
+    </button>
 {{ form_end(form) }}

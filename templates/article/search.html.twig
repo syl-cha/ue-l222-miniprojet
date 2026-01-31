@@ -4,7 +4,7 @@
 
 {% block body %}
 
-    <div class="container mt-4">
+    <div class="container py-5">
         <h1 class="my-4">Recherche d'articles</h1>
 
         <form method="get" action="{{ path('article_search') }}" class="mb-4">
@@ -31,7 +31,7 @@
             </div>
         {% endif %}
 
-        {# afficheage des résultats #}
+        {# affichage des résultats #}
         <h1 class="my-5">Recherche d'articles</h1>
         <div class="row">
             <!-- Contenu principal -->
@@ -39,7 +39,16 @@
                 {% for article in articles %}
                 <div class="row mb-4 align-items-start">
                     <div class="col-md-4">
-                        <img src="{{ article.image }}" alt="{{ article.title }}" class="img-fluid rounded">
+                        {% if article.image %}
+                            {# On vérifie si c'est une URL (http...) ou un fichier local #}
+                            {% if 'http' in article.image %}
+                                <img src="{{ article.image }}" class="img-fluid rounded" alt="{{ article.title }}" style="width: 100%; height: 300px; object-fit: cover; object-position: center; border-radius: 8px;">
+                            {% else %}
+                                <img src="{{ asset('uploads/articles/' ~ article.image) }}" class="img-fluid rounded" alt="{{ article.title }}" style="width: 100%; height: 300px; object-fit: cover; object-position: center; border-radius: 8px;">
+                            {% endif %}
+                        {% else %}
+                            <img src="{{ asset('images/default.jpg') }}" class="img-fluid rounded" alt="Image par défaut" style="width: 100%; height: 300px; object-fit: cover; object-position: center; border-radius: 8px;">
+                        {% endif %}
                     </div>
                     <div class="col-md-8">
                         <h2>{{ article.title }}</h2>
@@ -49,7 +58,7 @@
                     {% endif %}</p>
                         <p>{{ article.content|slice(0, 200) ~ '...' }}</p>
                         <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-sm btn-info">Voir</a>
-                        <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                        <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning"> <i class="bi bi-pencil"></i> Modifier</a>
                     </div>
                 </div>
                 {% endfor %}
@@ -57,6 +66,6 @@
             </div>
 
     <div class="d-flex mb-2">
-        <a href="{{ path('article_index') }}" class="btn btn-secondary">Retour à la liste complète</a>
+        <a href="{{ path('article_index') }}" class="btn btn-secondary"> <i class="bi bi-arrow-left"></i> Retour à la liste complète</a>
     </div>
 {% endblock %}

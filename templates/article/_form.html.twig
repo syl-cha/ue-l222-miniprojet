@@ -1,4 +1,7 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {{ form_row(form.title, {'label': 'Titre'}) }}
+    {{ form_row(form.content, {'label': "Contenu de l'article"}) }}
+    {{ form_row(form.category, {'label': 'Catégorie'}) }}
+    {{ form_row(form.imageFile, {'label': "Image d'illustration"}) }}
+    <button class="btn btn-primary">{{ button_label|default('Mettre à jour') }}</button>
 {{ form_end(form) }}
