@@ -31,9 +31,9 @@ return [
         'type' => 'css',
     ],
 
-    /*'bootstrap-theme' => [
+    'bootstrap-theme' => [
         'path' => 'vendor/bootstrap-theme.css',
         'url' => 'https://bootswatch.com/5/litera/bootstrap.min.css',
         'type' => 'css',
-    ],*/
+    ],
 ];
