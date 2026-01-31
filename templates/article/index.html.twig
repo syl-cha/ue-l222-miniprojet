@@ -16,9 +16,9 @@
                     </div>
                     <div class="col-md-8">
                         <h2>{{ article.title }}</h2>
-                        <p class="text-muted">Catégorie {{ article.Category.name }} |  Publié le {{ article.createdAt|date('d/m/Y') }}
+                        <p class="text-muted"> <i class="bi bi-tag-fill"></i> {{ article.Category.name }} |   <i class="bi bi-calendar3"> </i>{{ article.createdAt|date('d/m/Y') }} |  <i class="bi bi-eye-fill"></i> {{ article.vueCount | default(0) }}
                          {% if article.author %}
-                        par {{ article.author.firstName }} {{ article.author.lastName | upper }}
+                        <span class="ms-3">par {{ article.author.firstName }} {{ article.author.lastName | upper }}</span>
                     {% endif %}</p>
                         <p>{{ article.content|slice(0, 200) ~ '...' }}</p>
                         <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-sm btn-info">Voir</a>
@@ -33,20 +33,15 @@
             <div class="col-lg-2">
                 <aside class="p-3 bg-light rounded position-sticky" style="top: 2rem;">
 
-                    <h6>Articles récents</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Exemple</a></li>
-                        <li><a href="#">Exemple</a></li>
-                        <li><a href="#">Exemple</a></li>
-                    </ul>
+                    {{ include('partials/_article_short_list.html.twig', {
+                        title: 'Articles récents',
+                        articles: articles|slice(0, 3)
+                    }) }}
 
-
-                    <h6 class="mt-4">Articles les plus vus</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Exemple</a></li>
-                        <li><a href="#">Exemple</a></li>
-                        <li><a href="#">Exemple</a></li>
-                    </ul>
+                    {{ include('partials/_article_short_list.html.twig', {
+                        title: 'Articles les plus vus',
+                        articles: mostViewedArticles
+                    }) }}
 
                     <h6>Tags les plus utilisés</h6>
                     <ul class="list-unstyled">

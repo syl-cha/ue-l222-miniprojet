@@ -76,6 +76,9 @@ private ?\DateTimeInterface $createdAt = null;
     #[ORM\Column(type: "string", length: 255, nullable: true)]
         private ?string $image = null;
 
+    #[ORM\Column]
+    private ?int $vue_count = null;
+
 
         public function getImage(): ?string
         {
@@ -110,6 +113,18 @@ private ?\DateTimeInterface $createdAt = null;
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    public function getVueCount(): ?int
+    {
+        return $this->vue_count;
+    }
+
+    public function setVueCount(int $vue_count): static
+    {
+        $this->vue_count = $vue_count;
 
         return $this;
     }

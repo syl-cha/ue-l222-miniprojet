@@ -63,16 +63,16 @@ class AppFixtures extends Fixture
 
         /*** Création des catégories ***/
         $categoryNames = [
-        'Technologie',
-        'Culture',
-        'Sport',
-        'Économie',
-        'Société',
-        'Science',
-        'Politique',
-        'Santé',
-        'Voyages',
-        'Éducation'
+            'Technologie',
+            'Culture',
+            'Sport',
+            'Économie',
+            'Société',
+            'Science',
+            'Politique',
+            'Santé',
+            'Voyages',
+            'Éducation'
         ];
 
 
@@ -103,7 +103,9 @@ class AppFixtures extends Fixture
             // Catégorie aléatoire parmi celles créées
             $article->setCategory($faker->randomElement($categories));
 
-            $article->setImage("https://picsum.photos/seed/" . rand(1,1000) . "/800/600");
+            $article->setImage("https://picsum.photos/seed/" . rand(1, 1000) . "/800/600");
+
+            $article->setVueCount($faker->numberBetween(2, 45));
 
             $manager->persist($article);
         }

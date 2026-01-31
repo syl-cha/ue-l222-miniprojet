@@ -11,13 +11,13 @@
 
         <div class="col-md-8">
             <h1 class="mb-3">{{ article.title }}</h1>
-            
+
             {# Catégorie et date #}
             {% if article.Category.name is defined %}
                 <p class="text-muted fst-italic mb-3">
-                    {{ article.Category.name }} | Publié le {{ article.createdAt|date('d/m/Y')  }}
+                    {{ article.Category.name }} | Publié le {{ article.createdAt|date('d/m/Y')  }} |  <i class="bi bi-eye-fill"></i> {{ article.vueCount | default(0) }}
                     {% if article.author %}
-                        par {{ article.author.firstName }} {{ article.author.lastName | upper }}
+                        <span class="ms-3">par {{ article.author.firstName }} {{ article.author.lastName | upper }}</span>
                     </p>
     {% endif %}
                 </p>
