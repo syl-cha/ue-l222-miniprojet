@@ -14,15 +14,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/article')]
 class ArticleController extends AbstractController
 {
     #[Route('/', name: 'article_index', methods: ['GET'])]
-    public function index(ArticleRepository $articleRepository): Response
+    public function index(ArticleRepository $articleRepository, PaginatorInterface $paginator, Request $request): Response
     {
+        // On crée la pagination
+        $pagination = $paginator->paginate(
+            $articleRepository->findAll(), // La requête (tous les articles)
+            $request->query->getInt('page', 1), // Le numéro de page dans l'URL
+            6 // Nombre d'articles par page
+        );
+
         return $this->render('article/index.html.twig', [
-            'articles' => $articleRepository->findAll(),
+            'articles' => $pagination, // On envoie $pagination au lieu de $articleRepository->findAll()
         ]);
     }
 
@@ -112,10 +120,16 @@ class ArticleController extends AbstractController
     }
     
     #[Route('/category/{id}/articles', name: 'articles_by_category')]
-    public function articlesByCategory(Category $category, ArticleRepository $articleRepository): Response
+    public function articlesByCategory(Category $category, ArticleRepository $articleRepository, PaginatorInterface $paginator, Request $request): Response
     {
         // Récupère les articles liés à cette catégorie
-        $articles = $articleRepository->findBy(['Category' => $category], ['createdAt' => 'DESC']);
+        $data = $articleRepository->findBy(['Category' => $category], ['createdAt' => 'DESC']);
+        
+        $articles = $paginator->paginate(
+            $data,
+            $request->query->getInt('page', 1),
+            6
+        );
 
         return $this->render('article/articles_by_category.html.twig', [
             'category' => $category,

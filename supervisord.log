@@ -64,3 +64,25 @@
 2026-01-30 17:54:01,175 INFO reaped unknown pid 1674 (exit status 0)
 2026-01-30 19:32:48,411 WARN received SIGTERM indicating exit request
 2026-01-30 19:32:48,459 INFO waiting for apache2, mysqld to die
+2026-01-30 22:39:44,304 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2026-01-30 22:39:44,305 INFO Included extra file "/etc/supervisor/conf.d/supervisord-apache2.conf" during parsing
+2026-01-30 22:39:44,305 INFO Included extra file "/etc/supervisor/conf.d/supervisord-mysqld.conf" during parsing
+2026-01-30 22:39:44,312 INFO RPC interface 'supervisor' initialized
+2026-01-30 22:39:44,312 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2026-01-30 22:39:44,316 INFO supervisord started with pid 1
+2026-01-30 22:39:45,328 INFO spawned: 'apache2' with pid 287
+2026-01-30 22:39:45,333 INFO spawned: 'mysqld' with pid 288
+2026-01-30 22:39:46,591 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-01-30 22:39:46,592 INFO success: mysqld entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-01-30 23:19:09,349 WARN received SIGTERM indicating exit request
+2026-01-30 23:19:09,376 INFO waiting for apache2, mysqld to die
+2026-01-30 23:19:42,937 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2026-01-30 23:19:42,938 INFO Included extra file "/etc/supervisor/conf.d/supervisord-apache2.conf" during parsing
+2026-01-30 23:19:42,938 INFO Included extra file "/etc/supervisor/conf.d/supervisord-mysqld.conf" during parsing
+2026-01-30 23:19:42,946 INFO RPC interface 'supervisor' initialized
+2026-01-30 23:19:42,946 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2026-01-30 23:19:42,950 INFO supervisord started with pid 1
+2026-01-30 23:19:43,962 INFO spawned: 'apache2' with pid 33
+2026-01-30 23:19:43,966 INFO spawned: 'mysqld' with pid 34
+2026-01-30 23:19:45,288 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-01-30 23:19:45,289 INFO success: mysqld entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
