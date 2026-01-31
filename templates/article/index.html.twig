@@ -22,46 +22,6 @@
         </div>
     </form>
 
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Author</th>
-                <th>Content</th>
-                <th class="text-end">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for article in articles %}
-            <tr>
-                <td>{{ article.id }}</td>
-                <td>{{ article.title }}</td>
-                <td>
-                    {% if article.Category is not null and article.Category.name is defined %}
-                        {{ article.Category.name }}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if article.author %}
-                        {{ article.author.firstName }} {{ article.author.lastName | upper }}
-                    {% endif %}
-                </td>
-                <td>{{ article.content|slice(0, 60) ~ '...' }}</td>
-                <td class="text-end">
-                    <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-sm btn-info">Show</a>
-                    <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6" class="text-center">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-=======
     <div class="container mt-4">
         <h1 class="my-5">Retrouvez tous les articles</h1>
         <div class="row">
