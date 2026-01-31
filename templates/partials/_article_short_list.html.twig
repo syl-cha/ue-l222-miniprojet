@@ -1,0 +1,18 @@
+{#
+ # Affiche une liste d'articles avec un titre.
+ #
+ # @var string title        Le titre à afficher au-dessus de la liste.
+ # @var Article[] articles La liste d'articles à afficher.
+ #}
+<h6 class="mt-4">{{ title | default('Liste d\'articles') }}</h6>
+{% if articles is defined and articles is not empty %}
+    <ul class="list-unstyled">
+        {% for article in articles %}
+            <li class="text-truncate fs-6">
+                <a class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{{ path('article_show', {'id': article.id}) }}">{{ article.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p class="small">Aucun article à afficher.</p>
+{% endif %}

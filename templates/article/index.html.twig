@@ -3,8 +3,8 @@
 {% block title %}UE-L222 | Article{% endblock %}
 
 {% block body %}
-    <h1 class="my-4">Article index</h1>
 
+<<<<<<< HEAD
     {# form de recherche #}
     <form method="get" action="{{ path('article_search') }}" class="mb-4">
         <div class="input-group">
@@ -61,6 +61,63 @@
         {% endfor %}
         </tbody>
     </table>
+=======
+    <div class="container mt-4">
+        <h1 class="my-5">Retrouvez tous les articles</h1>
+        <div class="row">
+            <!-- Contenu principal -->
+            <div class="col-lg-10">
+                {% for article in articles %}
+                <div class="row mb-4 align-items-start">
+                    <div class="col-md-4">
+                        <img src="{{ article.image }}" alt="{{ article.title }}" class="img-fluid rounded">
+                    </div>
+                    <div class="col-md-8">
+                        <h2>{{ article.title }}</h2>
+                        <p class="text-muted"> <i class="bi bi-tag-fill"></i> {{ article.Category.name }} |   <i class="bi bi-calendar3"> </i>{{ article.createdAt|date('d/m/Y') }} |  <i class="bi bi-eye-fill"></i> {{ article.vueCount | default(0) }}
+                         {% if article.author %}
+                        <span class="ms-3">par {{ article.author.firstName }} {{ article.author.lastName | upper }}</span>
+                    {% endif %}</p>
+                        <p>{{ article.content|slice(0, 200) ~ '...' }}</p>
+                        <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                        <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="navigation d-flex justify-content-center mt-4">
+                    {{ knp_pagination_render(articles) }}
+                </div>
+            </div>
 
-    <a href="{{ path('article_new') }}" class="btn btn-primary">Create new</a>
+
+            <!-- Aside -->
+            <div class="col-lg-2">
+                <aside class="p-3 bg-light rounded position-sticky" style="top: 2rem;">
+
+                    {{ include('partials/_article_short_list.html.twig', {
+                        title: 'Articles récents',
+                        articles: articles|slice(0, 3)
+                    }) }}
+
+                    {{ include('partials/_article_short_list.html.twig', {
+                        title: 'Articles les plus vus',
+                        articles: mostViewedArticles
+                    }) }}
+
+                    <h6>Tags les plus utilisés</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Exemple</a></li>
+                        <li><a href="#">Exemple</a></li>
+                        <li><a href="#">Exemple</a></li>
+                    </ul>
+
+                    <a href="{{ path('article_new') }}" class="btn btn-primary">Créer un article</a>
+
+                </aside>
+            </div>
+        </div>
+    </div>
+
+>>>>>>> main
+
 {% endblock %}

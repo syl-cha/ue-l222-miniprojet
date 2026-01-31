@@ -1,50 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{# {% block title %}Article{% endblock %} #}
-{% block title %}Article [{{ article.id }}]{% endblock %}
+{% block title %}Article [{{ article.id }}] - {{ article.title }}{% endblock %}
 
 {% block body %}
-    <h1 class="mt-4">{{ article.title }}</h1>
-    {% if article.Category.name is defined %}
-        <h4 class="fst-italic fw-light">{{ article.Category.name }}</h4>
+<div class="container mt-5">
+    <div class="row align-items-center g-4">
+        <div class="col-md-4 d-flex justify-content-center">
+            <img src="{{ article.image }}" alt="{{ article.title }}" class="img-fluid rounded">
+        </div>
+
+        <div class="col-md-8">
+            <h1 class="mb-3">{{ article.title }}</h1>
+
+            {# Catégorie et date #}
+            {% if article.Category.name is defined %}
+                <p class="text-muted fst-italic mb-3">
+                    {{ article.Category.name }} | Publié le {{ article.createdAt|date('d/m/Y')  }} |  <i class="bi bi-eye-fill"></i> {{ article.vueCount | default(0) }}
+                    {% if article.author %}
+                        <span class="ms-3">par {{ article.author.firstName }} {{ article.author.lastName | upper }}</span>
+                    </p>
     {% endif %}
-    {% if article.author %}
-        <p class="lead fst-italic">
-            Par {{ article.author.firstName }} {{ article.author.lastName | upper }}
-        </p>
-    {% endif %}
+                </p>
+            {% endif %}
 
-    <p class="mt-5 mb-4">
-        {{ article.content }}
-    </p>
-    <!--<table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ article.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ article.title }}</td>
-            </tr>
-            <tr>
-                <th>Content</th>
-                <td>{{ article.content }}</td>
-            </tr>
-            <tr>
-                <th>Category</th>
-                <td>
-                    {% if article.Category.name is defined %}
-                        {{ article.Category.name }}
-                    {% endif %}
-                </td>
-            </tr>
-        </tbody>
-    </table>-->
+            <p>{{ article.content|nl2br }}</p>
 
-    <a href="{{ path('article_index') }}" class="btn btn-secondary">Back to list</a>
+            {# Boutons d'action #}
+            <div class="mt-4">
+                <a href="{{ path('article_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Revenir aux articles
+                </a>
 
-    <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-warning ms-4">Edit</a>
+                <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-warning ms-2">
+                    <i class="bi bi-pencil"></i> Modifier
+                </a>
 
-    {{ include('article/_delete_form.html.twig') }}
+                {{ include('article/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

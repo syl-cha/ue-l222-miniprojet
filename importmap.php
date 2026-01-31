@@ -30,4 +30,10 @@ return [
         'version' => '1.13.1',
         'type' => 'css',
     ],
+
+    /*'bootstrap-theme' => [
+        'path' => 'vendor/bootstrap-theme.css',
+        'url' => 'https://bootswatch.com/5/litera/bootstrap.min.css',
+        'type' => 'css',
+    ],*/
 ];

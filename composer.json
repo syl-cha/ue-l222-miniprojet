@@ -12,6 +12,7 @@
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.14",
+        "knplabs/knp-paginator-bundle": "^6.10",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "6.4.*",
         "symfony/asset-mapper": "6.4.*",
@@ -25,6 +26,7 @@
         "symfony/runtime": "6.4.*",
         "symfony/security-bundle": "6.4.*",
         "symfony/security-csrf": "6.4.*",
+        "symfony/translation": "6.4.*",
         "symfony/twig-bundle": "6.4.*",
         "symfony/validator": "6.4.*",
         "symfony/web-profiler-bundle": "6.4.*",
@@ -83,6 +85,7 @@
         }
     },
     "require-dev": {
+        "fakerphp/faker": "^1.24",
         "symfony/stopwatch": "6.4.*"
     }
 }

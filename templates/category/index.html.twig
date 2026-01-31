@@ -1,35 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}UE-L222 | Category{% endblock %}
+{% block title %}UE-L222 | Categories{% endblock %}
 
 {% block body %}
-    <h1 class="my-4">Category index</h1>
+    <div class="container mt-4">
+        <h1 class="my-4">Catégories</h1>
 
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th class="text-end">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for category in categories %}
-            <tr>
-                <td>{{ category.id }}</td>
-                <td>{{ category.name }}</td>
-                <td class="text-end">
-                    <a href="{{ path('category_show', {'id': category.id}) }}" class="btn btn-sm btn-info">Show</a>
-                    <a href="{{ path('category_edit', {'id': category.id}) }}" class="btn btn-sm btn-warning">Edit</a>
-                </td>
-            </tr>
+        {% if categories|length > 0 %}
+            <ul class="list-group">
+                {% for category in categories %}
+                    <li class="list-group-item">
+                        <a href="{{ path('articles_by_category', {'id': category.id}) }}">
+                            {{ category.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
         {% else %}
-            <tr>
-                <td colspan="3" class="text-center">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <p class="text-center">No categories found.</p>
+        {% endif %}
 
-    <a href="{{ path('category_new') }}" class="btn btn-primary">Create new</a>
+        <a href="{{ path('category_new') }}" class="btn btn-primary mt-4">Créer une nouvelle catégorie</a>
+    </div>
 {% endblock %}
