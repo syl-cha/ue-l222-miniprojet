@@ -26,6 +26,19 @@ class ArticleType extends AbstractType
                 'label' => 'Image de l\'article',
                 'mapped' => false,
                 'required' => false,
+                // On ajoute des sécurités ici pour les images
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/webp',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez uploader une image valide (JPG, PNG ou WEBP).',
+                        'maxSizeMessage' => 'Le fichier est trop lourd (2Mo max).',
+                    ])
+                ],
             ])     
         ;
     }
