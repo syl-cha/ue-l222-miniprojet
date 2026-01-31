@@ -57,8 +57,8 @@
                         <span class="ms-3">par {{ article.author.firstName }} {{ article.author.lastName | upper }}</span>
                     {% endif %}</p>
                         <p>{{ article.content|slice(0, 200) ~ '...' }}</p>
-                        <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-sm btn-info">Voir</a>
-                        <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning"> <i class="bi bi-pencil"></i> Modifier</a>
+                        <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-info">Voir</a>
+                        <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-warning"> <i class="bi bi-pencil"></i> Modifier</a>
                     </div>
                 </div>
                 {% endfor %}
