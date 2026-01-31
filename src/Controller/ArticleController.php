@@ -22,16 +22,19 @@ class ArticleController extends AbstractController
     #[Route('/', name: 'article_index', methods: ['GET'])]
     public function index(ArticleRepository $articleRepository, PaginatorInterface $paginator, Request $request): Response
     {
+        $query = $articleRepository->createQueryBuilder('a')
+            ->orderBy('a.createdAt', 'DESC')
+            ->getQuery();
+
         // On crée la pagination
         $pagination = $paginator->paginate(
-            $articleRepository->findAll(), // La requête (tous les articles)
+            $query, // On pagine la requête triée
             $request->query->getInt('page', 1), // Le numéro de page dans l'URL
             6 // Nombre d'articles par page
         );
 
         return $this->render('article/index.html.twig', [
-            'articles' => $pagination, // On envoie $pagination au lieu de $articleRepository->findAll()
-            'articles' => $articleRepository->findBy([], ['createdAt' => 'DESC']),
+            'articles' => $pagination, // On envoie $pagination
             'mostViewedArticles' => $articleRepository->findMostViewed(3),
         ]);
     }
@@ -132,7 +135,7 @@ class ArticleController extends AbstractController
     {
         // Récupère les articles liés à cette catégorie
         $data = $articleRepository->findBy(['Category' => $category], ['createdAt' => 'DESC']);
-        
+
         $articles = $paginator->paginate(
             $data,
             $request->query->getInt('page', 1),
