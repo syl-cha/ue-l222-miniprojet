@@ -3,81 +3,60 @@
 {% block title %}UE-L222 | Recherche{% endblock %}
 
 {% block body %}
-    <h1 class="my-4">Recherche d'articles</h1>
 
-    {# form de recherche #}
-    <form method="get" action="{{ path('article_search') }}" class="mb-4">
-        <div class="input-group">
-            <input 
-                type="text" 
-                name="query" 
-                class="form-control" 
-                placeholder="Rechercher un article..." 
-                value="{{ query }}"
-                autofocus
-            >
-            <button class="btn btn-primary" type="submit">
-                Rechercher
-            </button>
-        </div>
-    </form>
+    <div class="container mt-4">
+        <h1 class="my-4">Recherche d'articles</h1>
 
-    {# message de résultat #}
-    {% if query %}
-        <div class="alert alert-info">
-            Résultats pour : <strong>"{{ query }}"</strong> - {{ articles|length }} article(s) trouvé(s)
-        </div>
-    {% endif %}
+        <form method="get" action="{{ path('article_search') }}" class="mb-4">
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    name="query" 
+                    class="form-control" 
+                    placeholder="Rechercher un article..." 
+                    value="" {#pas de valeur parce que le query n'existe pas ici#}
+                    autofocus
+                >
+                <button class="btn btn-primary" type="submit">
+                    Rechercher
+                </button>
+            </div>
+        </form>
+        
 
-    {# afficheage des résultats #}
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Author</th>
-                <th>Content</th>
-                <th class="text-end">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for article in articles %}
-            <tr>
-                <td>{{ article.id }}</td>
-                <td>{{ article.title }}</td>
-                <td>
-                    {% if article.Category is not null and article.Category.name is defined %}
-                        {{ article.Category.name }}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if article.author %}
-                        {{ article.author.firstName }} {{ article.author.lastName | upper }}
-                    {% endif %}
-                </td>
-                <td>{{ article.content|slice(0, 60) ~ '...' }}</td>
-                <td class="text-end">
-                    <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-sm btn-info">Show</a>
-                    <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6" class="text-center">
-                    {% if query %}
-                        Aucun article trouvé pour "{{ query }}"
-                    {% else %}
-                        no records found
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        {# message de résultat #}
+        {% if query %}
+            <div class="alert alert-info">
+                Résultats pour : <strong>"{{ query }}"</strong> - {{ articles|length }} article(s) trouvé(s)
+            </div>
+        {% endif %}
 
-    <div class="d-flex justify-content-between">
-        <a href="{{ path('article_new') }}" class="btn btn-primary">Create new</a>
+        {# afficheage des résultats #}
+        <h1 class="my-5">Recherche d'articles</h1>
+        <div class="row">
+            <!-- Contenu principal -->
+            <div class="col-lg-10">
+                {% for article in articles %}
+                <div class="row mb-4 align-items-start">
+                    <div class="col-md-4">
+                        <img src="{{ article.image }}" alt="{{ article.title }}" class="img-fluid rounded">
+                    </div>
+                    <div class="col-md-8">
+                        <h2>{{ article.title }}</h2>
+                        <p class="text-muted"> <i class="bi bi-tag-fill"></i> {{ article.Category.name }} |   <i class="bi bi-calendar3"> </i>{{ article.createdAt|date('d/m/Y') }} |  <i class="bi bi-eye-fill"></i> {{ article.vueCount | default(0) }}
+                         {% if article.author %}
+                        <span class="ms-3">par {{ article.author.firstName }} {{ article.author.lastName | upper }}</span>
+                    {% endif %}</p>
+                        <p>{{ article.content|slice(0, 200) ~ '...' }}</p>
+                        <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                        <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                    </div>
+                </div>
+                {% endfor %}
+                
+            </div>
+
+    <div class="d-flex mb-2">
         <a href="{{ path('article_index') }}" class="btn btn-secondary">Retour à la liste complète</a>
     </div>
 {% endblock %}

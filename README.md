@@ -548,38 +548,13 @@ $builder
         }
     }
 
-3. On crée notre requête dans le Repository :
-
-    public function searchFunction(string $recherche):array {
-        return 
-            $this->createQueryBuilder('a') //createQueryBuilder crée une requête SQL à l'aide de Doctrine
-            ->where('a.title LIKE :recherche')
-            ->orWhere('a.content LIKE :recherche')
-            ->setParameter('recherche', '%' . $recherche . '%')
-            ->getQuery() //transforme le querybuilder en querydoctrine
-            ->getResult(); //execute la requête
-    }
+3. On crée notre requête dans le ArticleRepository.php : avec jointure pour rassembler les différentes entités et pouvoir faire une recherche globale : article (titre ou contenu), catégorie et auteur (nom ou prénom)
 
 4. On l'implémente dans notre ArticleController.php
 
-On ajoute : Response après notre fonction pour dire qu'elle doit retoruner une page HTML
+5. On modifie la template du header pour l'afficher, et on crée une nouvelle template qui correspondra à la page de résultats de recherche (avec une architecture similaire à la page article/index.html.twig)
 
-    #[Route('/search', name: 'article_index', methods: ['GET'])]
-    public function search(Request $request, ArticleRepository $articleRepository): Response 
-    {
-        $recherche = $request->query->get('query', '');
-        
-        if (!empty(trim($recherche))) {
-            $articles = $articleRepository->searchFunction($recherche);
-        } else {
-            $articles = $articleRepository->findAll();
-        }
-        
-        return $this->render('article/search.html.twig', [
-            'articles' => $articles,
-            'query' => $recherche,
-        ]);
-    }
+
 ## Interfaces
 
 ### Système de message d'alerte

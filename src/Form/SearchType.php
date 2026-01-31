@@ -24,7 +24,7 @@ class SearchType extends AbstractType
     {
         $resolver->setDefaults([
             'method' => 'GET',
-            'csrf_protection' => false
+            'csrf_protection' => false //Protection inutile dans ce type de formulaire
         ]);
     }
 }

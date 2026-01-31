@@ -29,17 +29,17 @@ class ArticleRepository extends ServiceEntityRepository
     public function searchFunction(string $recherche):array {
         return 
             $this->createQueryBuilder('a') //createQueryBuilder crée une requête SQL à l'aide de Doctrine
-            ->leftJoin('a.Category', 'c')
-            ->leftJoin('a.author', 'u')  // ← JOIN sur User
+            ->leftJoin('a.Category', 'c') //Jointure sur category
+            ->leftJoin('a.author', 'u')  // Jointure sur user
             ->where('a.title LIKE :recherche')
             ->orWhere('a.content LIKE :recherche')
             ->orWhere('c.name LIKE :recherche')
-            ->orWhere('u.firstName LIKE :recherche')   // ← Recherche prénom
-            ->orWhere('u.lastName LIKE :recherche')    // ← Recherche nom
-            ->orWhere('u.username LIKE :recherche')    // ← Recherche username
+            ->orWhere('u.firstName LIKE :recherche')  
+            ->orWhere('u.lastName LIKE :recherche')    
+            ->orWhere('u.username LIKE :recherche')
             ->setParameter('recherche', '%' . $recherche . '%')
-            ->getQuery()
-            ->getResult();
+            ->getQuery() // transforme la requête en objet Query, prêt à être éxecuté
+            ->getResult(); //envoie la requête
     }
 
     // /**
