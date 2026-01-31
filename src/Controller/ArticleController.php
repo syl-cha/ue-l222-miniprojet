@@ -38,6 +38,7 @@ class ArticleController extends AbstractController
             /** @var User $user */
             $user = $this->getUser();
             $article->setAuthor($user);
+            $article->setVueCount(0);
             $entityManager->persist($article);
             $entityManager->flush();
 
@@ -51,8 +52,13 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/{id}', name: 'article_show', methods: ['GET'])]
-    public function show(Article $article): Response
+    public function show(Article $article, EntityManagerInterface $entityManager): Response
     {
+        // mise à jour des vues
+        $vueCount = $article->getVueCount();
+        $article->setVueCount($vueCount + 1);
+        // mise à jour de la BDD
+        $entityManager->flush();
         return $this->render('article/show.html.twig', [
             'article' => $article,
         ]);
@@ -110,7 +116,7 @@ class ArticleController extends AbstractController
 
         return $this->redirectToRoute('article_index', [], Response::HTTP_SEE_OTHER);
     }
-    
+
     #[Route('/category/{id}/articles', name: 'articles_by_category')]
     public function articlesByCategory(Category $category, ArticleRepository $articleRepository): Response
     {
