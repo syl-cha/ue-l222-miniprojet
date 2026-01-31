@@ -19,6 +19,29 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
+    /** 
+     * Fonction de recherche parmis les articles
+     * 
+     * @param string $recherche mot/chaine de caractère à rechercher
+     * @return array tableau des articles contenant la recherche
+     */
+
+    public function searchFunction(string $recherche):array {
+        return 
+            $this->createQueryBuilder('a') //createQueryBuilder crée une requête SQL à l'aide de Doctrine
+            ->leftJoin('a.Category', 'c')
+            ->leftJoin('a.author', 'u')  // ← JOIN sur User
+            ->where('a.title LIKE :recherche')
+            ->orWhere('a.content LIKE :recherche')
+            ->orWhere('c.name LIKE :recherche')
+            ->orWhere('u.firstName LIKE :recherche')   // ← Recherche prénom
+            ->orWhere('u.lastName LIKE :recherche')    // ← Recherche nom
+            ->orWhere('u.username LIKE :recherche')    // ← Recherche username
+            ->setParameter('recherche', '%' . $recherche . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Article[] Returns an array of Article objects
     //  */

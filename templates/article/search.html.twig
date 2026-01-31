@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}UE-L222 | Article{% endblock %}
+{% block title %}UE-L222 | Recherche{% endblock %}
 
 {% block body %}
-    <h1 class="my-4">Article index</h1>
+    <h1 class="my-4">Recherche d'articles</h1>
 
     {# form de recherche #}
     <form method="get" action="{{ path('article_search') }}" class="mb-4">
@@ -13,7 +13,7 @@
                 name="query" 
                 class="form-control" 
                 placeholder="Rechercher un article..." 
-                value="" {#pas de valeur parce que le query n'existe pas ici#}
+                value="{{ query }}"
                 autofocus
             >
             <button class="btn btn-primary" type="submit">
@@ -22,6 +22,14 @@
         </div>
     </form>
 
+    {# message de résultat #}
+    {% if query %}
+        <div class="alert alert-info">
+            Résultats pour : <strong>"{{ query }}"</strong> - {{ articles|length }} article(s) trouvé(s)
+        </div>
+    {% endif %}
+
+    {# afficheage des résultats #}
     <table class="table table-striped table-hover">
         <thead class="table-dark">
             <tr>
@@ -56,11 +64,20 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="6" class="text-center">no records found</td>
+                <td colspan="6" class="text-center">
+                    {% if query %}
+                        Aucun article trouvé pour "{{ query }}"
+                    {% else %}
+                        no records found
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('article_new') }}" class="btn btn-primary">Create new</a>
+    <div class="d-flex justify-content-between">
+        <a href="{{ path('article_new') }}" class="btn btn-primary">Create new</a>
+        <a href="{{ path('article_index') }}" class="btn btn-secondary">Retour à la liste complète</a>
+    </div>
 {% endblock %}
