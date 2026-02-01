@@ -679,3 +679,71 @@ Les fixtures pour les articles ont aussi été mises à jour :
 ```php
 $article->setVueCount($faker->numberBetween(2, 45));
 ```
+
+### Génération de données de test (Faker & Fixtures)
+
+Pour remplir la base de données rapidement lors du développement, nous utilisons Faker au sein des fixtures Symfony.
+
+Installation :
+
+```bash
+composer require --dev fakerphp/faker
+```
+
+Mise en œuvre : dans `src/DataFixtures/AppFixtures.php`, nous initialisons Faker pour générer des titres, du contenu et assigner des images aléatoires.
+
+Note sur les images : Faker génère des URLs d'images (via `imageUrl()`). Pour les tests locaux, nous lions ces URLs au dossier public/uploads/articles ou utilisons des placeholders pour simuler la présence de fichiers physiques.
+
+Exécution :
+
+```bash
+make db-reset
+```
+
+### Système de Pagination (KnpPaginatorBundle)
+
+Pour éviter de charger une certaine quantité d'articles sur une seule page, nous avons intégré KnpPaginatorBundle.
+
+- Configuration : dans le contrôleur (`ArticleController`), nous utilisons le service PaginatorInterface pour segmenter les résultats de la base de données.
+
+- Utilisation : le bundle reçoit une requête Doctrine (Query) et retourne un objet PaginationInterface contenant uniquement les 6 articles de la page demandée.
+
+- Affichage (Twig) : l'affichage des contrôles de navigation (Suivant/Précédent) se fait via :
+
+```php
+// Twig
+{{ knp_pagination_render(articles) }}
+```
+
+### Gestion sécurisée des Images (Upload & Types MIME)
+
+L'upload d'images est géré manuellement pour garantir un contrôle total sur la sécurité du serveur.
+
+#### Validation par Contraintes
+
+Nous utilisons le composant Validator de Symfony dans `ArticleType.php` pour filtrer les fichiers dès leur réception :
+
+```php
+'constraints' => [
+    new File([
+        'maxSize' => '2M',
+        'mimeTypes' => [
+            'image/jpeg',
+            'image/png',
+            'image/webp',
+        ],
+        'mimeTypesMessage' => 'Veuillez uploader une image valide (JPG, PNG ou WEBP).',
+        'maxSizeMessage' => 'Le fichier est trop lourd (2Mo max).',
+    ])
+],
+```
+
+#### Configuration sécurisée :
+
+- Vérification de l'Identité (MIME) : Symfony n'analyse pas seulement l'extension (ex: .jpg), mais inspecte le contenu réel du fichier. Cela empêche un utilisateur malveillant d'uploader un script PHP renommé en image.
+
+- Contrôle des Ressources (maxSize) : La limite à 2 Mo protège le serveur contre la saturation du disque dur et garantit des temps de chargement rapides pour les lecteurs du blog.
+
+- Anonymisation et Unicité : Chaque fichier est renommé via uniqid() avant d'être déplacé dans le dossier public/uploads/articles. Cela évite les conflits de noms (écrasement d'une image existante) et masque le nom d'origine.
+
+- Pré-requis technique : Pour que cette détection soit fiable, l'extension PHP fileinfo doit être activée sur le serveur. Elle permet à PHP de "lire" la signature réelle du fichier.

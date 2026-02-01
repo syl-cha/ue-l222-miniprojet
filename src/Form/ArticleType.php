@@ -22,7 +22,7 @@ class ArticleType extends AbstractType
                 'class' => Category::class,
                 'choice_label' => 'name',
             ])
-            ->add('imageFile', FileType::class, [ // <--- C'est ICI que le nom doit être imageFile
+            ->add('imageFile', FileType::class, [
                 'label' => 'Image de l\'article',
                 'mapped' => false,
                 'required' => false,
