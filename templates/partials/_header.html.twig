@@ -21,13 +21,27 @@
                     </li>
                 {% endif %}
                 {% if is_granted('ROLE_USER') %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('article_new') }}">Créer un article</a>
+                    <style>
+                        .btn-create-article{
+                            background-color: #676767; 
+                            border-radius: 10px}
+                        .btn-create-article a{
+                            color: #ffffff;
+                        }
+                        .btn-create-article:hover{
+                            background-color: #ffffff;
+                        }
+                        .btn-create-article:hover a {
+                            color: #676767 ;
+                        }
+                    </style>
+                    <li class="nav-item btn-create-article"> 
+                        <a class="nav-link" href="{{ path('article_new') }}"">Créer un article</a>
                     </li>
                 {% endif %}
             </ul>
             <form method="get" action="{{ path('article_search') }}" class="me-2">
-                <div class="input-group">
+                <div class="input-group input-group-sm  mr-2">
                     <input 
                         type="text" 
                         name="query" 
@@ -37,8 +51,8 @@
                         autofocus
                         style="border:none; outline:none; box-shadow: none"
                     >
-                    <button class="btn btn-primary" type="submit" style="background-color: #545454; border:none">
-                        Rechercher
+                    <button class="btn btn-primary" type="submit" style="background-color: #676767; border:none">
+                         <i class="bi bi-search"></i>
                     </button>
                 </div>
             </form>
