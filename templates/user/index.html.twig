@@ -6,39 +6,41 @@
     <div class="container py-5">
     <h1>Utilisateurs</h1>
 
-    <table class="table mt-5">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom d'utilisateur</th>
-                <th>Rôles</th>
-                <th>Mot de passe</th>
-                <th>Prénom</th>
-                <th>Nom</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-                <td>{{ user.password }}</td>
-                <td>{{ user.firstName }}</td>
-                <td>{{ user.lastName }}</td>
-                <td>
-                    <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-info">Voir</a>
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning"> <i class="bi bi-pencil"></i> Modifier</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">Pas d'utilisateurs trouvés</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Id</th>
+                    <th>Nom d'utilisateur</th>
+                    <th>Rôles</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                    <td>{{ user.firstName }}</td>
+                    <td>{{ user.lastName }}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-info">Voir</a>
+                            <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning"> <i class="bi bi-pencil"></i> Modifier</a>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7">Pas d'utilisateurs trouvés</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <a href="{{ path('app_user_new') }}" class="btn btn-primary mt-4">Créer un nouvel utilisateur</a>
     </div>

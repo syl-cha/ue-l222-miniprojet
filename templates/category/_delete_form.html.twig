@@ -1,5 +1,13 @@
-<form method="post" action="{{ path('category_delete', {'id': category.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');" class="mt-4">
+<form method="post" 
+    action="{{ path('category_delete', {'id': category.id}) }}" 
+    class="mt-4">
     <input type="hidden" name="_method" value="DELETE">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
-    <button class="btn btn-danger">Delete</button>
+    
+    <button type="button" 
+        class="btn btn-danger mt-4" 
+        onclick="if(confirm('⚠️Attention, l\'ensemble des articles associés à cette catégorie seront aussi supprimés !\n\nÊtes-vous sûr de vouloir supprimer cette catégorie ?')) { 
+            this.parentElement.submit();}"> <!--si ok, le formulaire s'envoie, donc suppression de la catégorie-->
+        Supprimer
+    </button>
 </form>
