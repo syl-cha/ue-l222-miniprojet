@@ -127,7 +127,7 @@ class ArticleController extends AbstractController
     #[Route('/{id}/edit', name: 'article_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
-        // 1. On stocke le nom de l'image actuelle
+        // On stocke le nom de l'image actuelle
         $oldImage = $article->getImage();
 
         /** @var User|null $currentUser */
@@ -205,9 +205,9 @@ class ArticleController extends AbstractController
         $data = $articleRepository->findBy(['Category' => $category], ['createdAt' => 'DESC']);
 
         $articles = $paginator->paginate(
-            $data,
-            $request->query->getInt('page', 1),
-            6
+            $data, // La source : la requête (Query) ou le tableau contenant tous les articles
+            $request->query->getInt('page', 1), // Le numéro de page actuelle : récupéré dans l'URL (?page=X), 1 par défaut
+            6 // La limite : nombre d'éléments à afficher par page
         );
 
         return $this->render('article/articles_by_category.html.twig', [
